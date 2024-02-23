@@ -232,6 +232,7 @@ async def main(args: argparse.Namespace) -> None:
     working_set: dict[int, PromptResponseLog] = {}
 
     for iteration_idx in range(n_iterations):
+        print(f"\n[*] Iteration {iteration_idx} start\n")
         logger.info("Getting responses from attacker model")
 
         # Fill the working set with new items if needed
@@ -392,24 +393,27 @@ async def main(args: argparse.Namespace) -> None:
         keep_keys = sorted_working_set_keys[:n_keep]
         working_set = {k: working_set[k] for k in keep_keys}
 
-        logger.info(f"[*] ITERATION {iteration_idx} COMPLETE\n[>] Working set:\n")
+        print(f"\n[*] ITERATION {iteration_idx} COMPLETE\n[*] Working set\n")
         for prompt_id, log in working_set.items():
-            logger.info(
-                f"\n\n## Prompt_ID: {prompt_id}\n"
-                f"## Prompt:\n{log.prompt}\n"
-                f"## Improvement:\n{log.improvement}\n"
-                f"## Response:\n{log.response}\n"
-                f"## Score: {log.score}\n"
-                f"## Score_Reasoning:\n{log.score_reasoning}\n\n"
+            print(
+                f"[>] Prompt_ID: {prompt_id}\n"
+                f"[>] Prompt: {log.prompt}\n"
+                f"[>] Improvement: {log.improvement}\n"
+                f"[>] Response:\n{log.response}\n"
+                f"[>] Score: {log.score}\n"
+                f"[>] Score_Reasoning: {log.score_reasoning}\n"
+                f"\n---\n"
             )
 
         if score_max >= score_threshold:
-            logger.info(f"Goal reached for threshold {score_threshold}")
+            print(f"[*] Goal reached for threshold {score_threshold}\n")
             break
         if iteration_idx >= n_iterations:
-            logger.info(
-                f"Max iterations {n_iterations} completed with max score {score_max}"
+            print(
+                f"[*] Max iterations {n_iterations} completed with max score {score_max}\n\n---"
             )
+        else:
+            print(f"[*] Max score at iteration {iteration_idx}: {score_max} (threshold={score_threshold})\n\n---")
 
 
 
